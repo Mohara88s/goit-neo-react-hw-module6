@@ -1,11 +1,12 @@
 import { FaPhone, FaUserLarge } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
+import { deleteContact } from "../../redux/contactsSlice";
 import Button from "@mui/material/Button";
 import style from "./Contact.module.css";
 
-export default function Contact({
-	contact: { id, name, number },
-	deleteContact,
-}) {
+export default function Contact({ contact: { id, name, number } }) {
+	const dispatch = useDispatch();
+
 	return (
 		<div className={style.contact_card}>
 			<ul className={style.contact_card_info}>
@@ -22,7 +23,7 @@ export default function Contact({
 				variant="outlined"
 				color="primary"
 				onClick={() => {
-					deleteContact(id);
+					dispatch(deleteContact(id));
 				}}
 			>
 				Delete
