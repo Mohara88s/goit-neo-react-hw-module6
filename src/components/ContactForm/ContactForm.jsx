@@ -4,7 +4,21 @@ import { useId } from "react";
 import Button from "@mui/material/Button";
 import style from "./ContactForm.module.css";
 
+import { useSelector, useDispatch } from "react-redux";
+import { addContact } from "../../redux/contactsSlice";
+import { getContacts } from "../../redux/selectors";
+
 const phoneRegExp = /^\d{3}-\d{2}-\d{2}$/;
+
+// Зробив Id як в прикладі
+const getNewId = (existingContacts) => {
+	if (existingContacts.length === 0) {
+		return "id-1";
+	}
+	const lastContact = existingContacts[existingContacts.length - 1];
+	const newIdNumber = parseInt(lastContact.id.split("-")[1], 10) + 1;
+	return `id-${newIdNumber}`;
+};
 
 const ContactFormSchema = Yup.object().shape({
 	name: Yup.string()
@@ -23,12 +37,16 @@ const initialValues = {
 	number: "",
 };
 
-export default function ContactForm({ addContact }) {
+export default function ContactForm() {
+	const dispatch = useDispatch();
+	const contacts = useSelector(getContacts);
+
 	const nameFieldId = useId();
 	const numberFieldId = useId();
 
 	const handleSubmit = (values, actions) => {
-		addContact(values);
+		const newContact = { id: getNewId(contacts), ...values };
+		dispatch(addContact(newContact));
 		actions.resetForm();
 	};
 
